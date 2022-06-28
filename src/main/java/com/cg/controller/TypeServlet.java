@@ -1,8 +1,8 @@
 package com.cg.controller;
 
-import com.cg.model.Authors;
-import com.cg.model.Genres;
-import com.cg.model.Publishers;
+import com.cg.model.Author;
+import com.cg.model.Genre;
+import com.cg.model.Publisher;
 import com.cg.service.*;
 
 import javax.servlet.RequestDispatcher;
@@ -33,9 +33,9 @@ public class TypeServlet extends HttpServlet {
         if (req.getParameter("type") != null) {
             List<String> errors = new ArrayList<>();
             String type = req.getParameter("type");
-            List<Authors> authorList = authorService.findAll();
-            List<Genres> genreList = genreService.findAll();
-            List<Publishers> publisherList = publisherService.findAll();
+            List<Author> authorList = authorService.findAll();
+            List<Genre> genreList = genreService.findAll();
+            List<Publisher> publisherList = publisherService.findAll();
 
             switch (type) {
                 case "authors":
@@ -90,19 +90,19 @@ public class TypeServlet extends HttpServlet {
                     errors.add("This Author already exists");
                 else {
                     if (action.equals("add")) {
-                        Authors author = new Authors(name);
+                        Author author = new Author(name);
                         boolean success = authorService.create(author);
                         if (success)
                             req.setAttribute("success", "Add new Author Success!");
                     } else {
                         int id = Integer.parseInt(req.getParameter("id"));
-                        Authors author = new Authors(id, name);
+                        Author author = new Author(id, name);
                         boolean success = authorService.update(author);
                         if (success)
                             req.setAttribute("success", "Update Author Success!");
                     }
                 }
-                List<Authors> authorList = authorService.findAll();
+                List<Author> authorList = authorService.findAll();
                 req.setAttribute("list", authorList);
                 break;
             case "genres":
@@ -111,19 +111,19 @@ public class TypeServlet extends HttpServlet {
                     errors.add("This genre already exists");
                 else {
                     if (action.equals("add")) {
-                        Genres genre = new Genres(name);
+                        Genre genre = new Genre(name);
                         boolean success = genreService.create(genre);
                         if (success)
                             req.setAttribute("success", "Add new Genre Success!");
                     } else {
                         int id = Integer.parseInt(req.getParameter("id"));
-                        Genres genre = new Genres(id, name);
+                        Genre genre = new Genre(id, name);
                         boolean success = genreService.update(genre);
                         if (success)
                             req.setAttribute("success", "Update Genre Success!");
                     }
                 }
-                List<Genres> genreList = genreService.findAll();
+                List<Genre> genreList = genreService.findAll();
                 req.setAttribute("list", genreList);
                 break;
             case "publishers":
@@ -132,19 +132,19 @@ public class TypeServlet extends HttpServlet {
                     errors.add("This Publisher already exists");
                 else {
                     if (action.equals("add")) {
-                        Publishers publisher = new Publishers(name);
+                        Publisher publisher = new Publisher(name);
                         boolean success = publisherService.create(publisher);
                         if (success)
                             req.setAttribute("success", "Add new Publisher Success!");
                     } else {
                         int id = Integer.parseInt(req.getParameter("id"));
-                        Publishers publisher = new Publishers(id, name);
+                        Publisher publisher = new Publisher(id, name);
                         boolean success = publisherService.update(publisher);
                         if (success)
                             req.setAttribute("success", "Update Publisher Success!");
                     }
                 }
-                List<Publishers> publisherList = publisherService.findAll();
+                List<Publisher> publisherList = publisherService.findAll();
                 req.setAttribute("list", publisherList);
                 break;
         }

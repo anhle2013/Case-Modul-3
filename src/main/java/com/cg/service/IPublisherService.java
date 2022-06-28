@@ -1,7 +1,7 @@
 package com.cg.service;
 
-import com.cg.model.Publishers;
+import com.cg.model.Publisher;
 
-public interface IPublisherService extends IGeneralService<Publishers> {
+public interface IPublisherService extends IGeneralService<Publisher> {
     boolean existsByName(String name);
 }

@@ -1,7 +1,6 @@
 package com.cg.service;
 
-import com.cg.dto.BookDTO;
-import com.cg.model.Authors;
+import com.cg.model.Author;
 import com.cg.utils.MySQLConnUtils;
 
 import java.sql.Connection;
@@ -87,8 +86,8 @@ public class AuthorService implements IAuthorService{
     }
 
     @Override
-    public List<Authors> findAll() {
-        List<Authors> authorList = new ArrayList<>();
+    public List<Author> findAll() {
+        List<Author> authorList = new ArrayList<>();
         try {
             Connection connection = MySQLConnUtils.getConnection();
             PreparedStatement statement = connection.prepareStatement(SELECT_ALL_AUTHORS);
@@ -97,7 +96,7 @@ public class AuthorService implements IAuthorService{
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                authorList.add(new Authors(id, name));
+                authorList.add(new Author(id, name));
             }
         } catch (SQLException e) {
             MySQLConnUtils.printSQLException(e);
@@ -106,8 +105,8 @@ public class AuthorService implements IAuthorService{
     }
 
     @Override
-    public List<Authors> searchAll(String search) {
-        List<Authors> authorList = new ArrayList<>();
+    public List<Author> searchAll(String search) {
+        List<Author> authorList = new ArrayList<>();
         try {
             Connection connection = MySQLConnUtils.getConnection();
             PreparedStatement statement = connection.prepareStatement(SEARCH_BY_FIRST_CHARACTER);
@@ -117,7 +116,7 @@ public class AuthorService implements IAuthorService{
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                authorList.add(new Authors(id, name));
+                authorList.add(new Author(id, name));
             }
         } catch (SQLException e) {
             MySQLConnUtils.printSQLException(e);
@@ -126,7 +125,7 @@ public class AuthorService implements IAuthorService{
     }
 
     @Override
-    public boolean create(Authors author) {
+    public boolean create(Author author) {
         boolean success = false;
         try {
             Connection connection = MySQLConnUtils.getConnection();
@@ -141,7 +140,7 @@ public class AuthorService implements IAuthorService{
     }
 
     @Override
-    public boolean update(Authors author) {
+    public boolean update(Author author) {
         boolean success = false;
         try {
             Connection connection = MySQLConnUtils.getConnection();

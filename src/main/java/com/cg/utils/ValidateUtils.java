@@ -23,4 +23,16 @@ public class ValidateUtils {
     public static boolean isDateValid(String dateStr) {
         return Pattern.compile(DATE_REGEX).matcher(dateStr).matches();
     }
+
+    public static boolean isUpperCase(String s)
+    {
+        for (int i=0; i<s.length(); i++)
+        {
+            if (!Character.isUpperCase(s.charAt(i)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -1,7 +1,8 @@
 package com.cg.service;
 
 import com.cg.dto.BookDTO;
-import com.cg.model.Books;
+import com.cg.model.Author;
+import com.cg.model.Book;
 import com.cg.utils.MySQLConnUtils;
 
 import java.sql.*;
@@ -78,6 +79,53 @@ public class BookDTOService implements IBookDTOService {
     private static String DISABLE_BOOK = "UPDATE books SET `active` = '0' WHERE `id` = ?;";
 
     private static String RE_ACTIVE_BOOK = "UPDATE books SET `active` = '1' WHERE `id` = ?;";
+
+//    private static String SEARCH_BY_FIRST_CHARACTER = "" +
+//            "SELECT " +
+//                "b.id, " +
+//                "b.name, " +
+//                "a.name AS `Author Name`, " +
+//                "g.name AS `Genre Name`, " +
+//                "p.name AS `Publisher Name`, " +
+//                "b.quantity, " +
+//                "b.available, " +
+//                "b.active " +
+//            "FROM books AS b " +
+//            "JOIN authors AS a " +
+//            "ON b.author_id = a.id " +
+//            "JOIN genres AS g " +
+//            "ON b.genre_id = g.id " +
+//            "JOIN publishers AS p " +
+//            "ON b.publisher_id = p.id " +
+//            "WHERE GetFirstCharacters(??) LIKE CONCAT (?, '%'); ";
+
+//    @Override
+//    public List<BookDTO> searchByFirstCharacters(String field_name, String search) {
+//        List<BookDTO> bookDTOList = new ArrayList<>();
+//        try {
+//            Connection connection = MySQLConnUtils.getConnection();
+//            PreparedStatement statement = connection.prepareStatement(SEARCH_BY_FIRST_CHARACTER);
+//
+//            statement.setString(1, field_name);
+//            statement.setString(2, search);
+//            ResultSet rs = statement.executeQuery();
+//            System.out.println(statement);
+//            while (rs.next()) {
+//                int id = rs.getInt("id");
+//                String name = rs.getString("name");
+//                String author = rs.getString("Author Name");
+//                String genre = rs.getString("Genre Name");
+//                String publisher = rs.getString("Publisher Name");
+//                //int quantity = rs.getInt("quantity");
+//                int available = rs.getInt("available");
+//                boolean active = rs.getBoolean("active");
+//                bookDTOList.add(new BookDTO(id, name, author, genre, publisher, available, active));
+//            }
+//        } catch (SQLException e) {
+//            MySQLConnUtils.printSQLException(e);
+//        }
+//        return bookDTOList;
+//    }
 
     @Override
     public boolean existsById (int id) {
@@ -156,7 +204,6 @@ public class BookDTOService implements IBookDTOService {
                 String author = rs.getString("Author Name");
                 String genre = rs.getString("Genre Name");
                 String publisher = rs.getString("Publisher Name");
-                //int quantity = rs.getInt("quantity");
                 int available = rs.getInt("available");
                 boolean active = rs.getBoolean("active");
                 bookDTOList.add(new BookDTO(id, name, author, genre, publisher, available, active));
@@ -203,7 +250,7 @@ public class BookDTOService implements IBookDTOService {
     }
 
     @Override
-    public boolean create(Books book) {
+    public boolean create(Book book) {
         boolean success = false;
         try {
             Connection connection = MySQLConnUtils.getConnection();
@@ -224,7 +271,7 @@ public class BookDTOService implements IBookDTOService {
     }
 
     @Override
-    public boolean update(Books book) {
+    public boolean update(Book book) {
         boolean success = false;
         try {
             Connection connection = MySQLConnUtils.getConnection();

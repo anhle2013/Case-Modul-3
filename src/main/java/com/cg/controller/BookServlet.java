@@ -1,12 +1,13 @@
 package com.cg.controller;
 
 import com.cg.dto.BookDTO;
-import com.cg.model.Authors;
-import com.cg.model.Books;
-import com.cg.model.Genres;
-import com.cg.model.Publishers;
+import com.cg.model.Author;
+import com.cg.model.Book;
+import com.cg.model.Genre;
+import com.cg.model.Publisher;
 import com.cg.service.*;
 import com.cg.utils.ValidateUtils;
+import com.mysql.cj.util.StringUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -107,9 +108,9 @@ public class BookServlet extends HttpServlet {
 
     public void showCreatePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/library/book/add.jsp");
-        List<Authors> authorList = authorService.findAll();
-        List<Genres> genreList = genreService.findAll();
-        List<Publishers> publisherList = publisherService.findAll();
+        List<Author> authorList = authorService.findAll();
+        List<Genre> genreList = genreService.findAll();
+        List<Publisher> publisherList = publisherService.findAll();
         req.setAttribute("authorList", authorList);
         req.setAttribute("genreList", genreList);
         req.setAttribute("publisherList", publisherList);
@@ -120,46 +121,28 @@ public class BookServlet extends HttpServlet {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/library/book/search.jsp");
         String field_name = req.getParameter("field_name");
         String search = "";
-        if (req.getParameter("search") != null)
-            search = req.getParameter("search").trim().replaceAll("\\s+", " ").toLowerCase();
         String query = "";
-        int firstIndex = search.indexOf("'");
-        int lastIndex = search.lastIndexOf("'");
-        if (firstIndex == 0 && lastIndex == search.length() -1) {
-            switch (field_name) {
-                case "name":
-                    query = "WHERE LOWER(b.name) = " + search + ";";
-                    break;
-                case "author":
-                    query = "WHERE LOWER(a.name) = " + search + ";";
-                    break;
-                case "genre":
-                    query = "WHERE LOWER(g.name) = " + search + ";";
-                    break;
-                case "publisher":
-                    query = "WHERE LOWER(p.name) = " + search + ";";
-                    break;
-                case "disable":
-                    query = "WHERE b.active = '0';";
-                    break;
+        if (field_name.equals("disable"))
+            query = "WHERE b.active = '0';";
+        else if (req.getParameter("search") != null) {
+            search = req.getParameter("search").trim().replaceAll("\\s+", " ");
+            int firstIndex = search.indexOf("'");
+            int lastIndex = search.lastIndexOf("'");
+            int spaceIndex = search.indexOf(" ");
+            boolean isAllUpperCase = ValidateUtils.isUpperCase(search);
+
+            if (spaceIndex == -1 && isAllUpperCase) {
+                if (firstIndex == 0 && lastIndex == search.length() - 1)
+                    query = "WHERE GetFirstCharacters(" + field_name + ") = '" + search + "';";
+                else
+                    query = "WHERE LOWER(" + field_name + ") LIKE '" + search + "%';";
             }
-        } else {
-            switch (field_name) {
-                case "name":
-                    query = "WHERE LOWER(b.name) LIKE '%" + search + "%';";
-                    break;
-                case "author":
-                    query = "WHERE LOWER(a.name) LIKE '%" + search + "%';";
-                    break;
-                case "genre":
-                    query = "WHERE LOWER(g.name) LIKE '%" + search + "%';";
-                    break;
-                case "publisher":
-                    query = "WHERE LOWER(p.name) LIKE '%" + search + "%';";
-                    break;
-                case "disable":
-                    query = "WHERE b.active = '0';";
-                    break;
+            else {
+                search = search.toLowerCase();
+                if (firstIndex == 0 && lastIndex == search.length() - 1)
+                    query = "WHERE LOWER(" + field_name + ") = " + search + ";";
+                else
+                     query = "WHERE LOWER(" + field_name + ") LIKE '%" + search + "%';";
             }
         }
         List<BookDTO> bookDTOList = bookDTOService.searchAll(query);
@@ -223,9 +206,9 @@ public class BookServlet extends HttpServlet {
                 errorsId.add("Book id NOT available");
             else {
                 BookDTO bookDTO = bookDTOService.getBookInfo(id);
-                List<Authors> authorList = authorService.findAll();
-                List<Genres> genreList = genreService.findAll();
-                List<Publishers> publisherList = publisherService.findAll();
+                List<Author> authorList = authorService.findAll();
+                List<Genre> genreList = genreService.findAll();
+                List<Publisher> publisherList = publisherService.findAll();
                 req.setAttribute("authorList", authorList);
                 req.setAttribute("genreList", genreList);
                 req.setAttribute("publisherList", publisherList);
@@ -287,7 +270,7 @@ public class BookServlet extends HttpServlet {
             else {
                 int id = bookDTOService.findBookId(name, authorId, genreId, publisherId);
                 if (id == -1) {
-                    Books book = new Books(name, authorId, genreId, publisherId, quantity, quantity);
+                    Book book = new Book(name, authorId, genreId, publisherId, quantity, quantity);
                     boolean success = bookDTOService.create(book);
                     req.setAttribute("success", success);
                 } else
@@ -296,9 +279,9 @@ public class BookServlet extends HttpServlet {
         }
         if (errors.size() > 0)
             req.setAttribute("errors", errors);
-        List<Authors> authorList = authorService.findAll();
-        List<Genres> genreList = genreService.findAll();
-        List<Publishers> publisherList = publisherService.findAll();
+        List<Author> authorList = authorService.findAll();
+        List<Genre> genreList = genreService.findAll();
+        List<Publisher> publisherList = publisherService.findAll();
         req.setAttribute("authorList", authorList);
         req.setAttribute("genreList", genreList);
         req.setAttribute("publisherList", publisherList);
@@ -349,7 +332,7 @@ public class BookServlet extends HttpServlet {
             if (errors.size() == 0) {
                 int checkId = bookDTOService.findBookId(name, authorId, genreId, publisherId);
                 if (checkId == -1) {
-                    Books book = new Books(id, name, authorId, genreId, publisherId);
+                    Book book = new Book(id, name, authorId, genreId, publisherId);
                     boolean success = bookDTOService.update(book);
                     if (success)
                         req.setAttribute("success", "Update Book infomation Successfull!");
@@ -359,9 +342,9 @@ public class BookServlet extends HttpServlet {
             if (errors.size() > 0)
                 req.setAttribute("errors", errors);
             BookDTO bookDTO = bookDTOService.getBookInfo(id);
-            List<Authors> authorList = authorService.findAll();
-            List<Genres> genreList = genreService.findAll();
-            List<Publishers> publisherList = publisherService.findAll();
+            List<Author> authorList = authorService.findAll();
+            List<Genre> genreList = genreService.findAll();
+            List<Publisher> publisherList = publisherService.findAll();
             req.setAttribute("bookDTO", bookDTO);
             req.setAttribute("authorList", authorList);
             req.setAttribute("genreList", genreList);
@@ -392,9 +375,9 @@ public class BookServlet extends HttpServlet {
             if (errors.size() > 0)
                 req.setAttribute("errors", errors);
             BookDTO bookDTO = bookDTOService.getBookInfo(id);
-            List<Authors> authorList = authorService.findAll();
-            List<Genres> genreList = genreService.findAll();
-            List<Publishers> publisherList = publisherService.findAll();
+            List<Author> authorList = authorService.findAll();
+            List<Genre> genreList = genreService.findAll();
+            List<Publisher> publisherList = publisherService.findAll();
             req.setAttribute("bookDTO", bookDTO);
             req.setAttribute("authorList", authorList);
             req.setAttribute("genreList", genreList);

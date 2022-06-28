@@ -1,7 +1,6 @@
 package com.cg.service;
 
-import com.cg.model.Authors;
-import com.cg.model.Publishers;
+import com.cg.model.Publisher;
 import com.cg.utils.MySQLConnUtils;
 
 import java.sql.Connection;
@@ -88,8 +87,8 @@ public class PublisherService implements IPublisherService{
     }
 
     @Override
-    public List<Publishers> findAll() {
-        List<Publishers> publishersList = new ArrayList<>();
+    public List<Publisher> findAll() {
+        List<Publisher> publisherList = new ArrayList<>();
         try {
             Connection connection = MySQLConnUtils.getConnection();
             PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PUBLISHERS);
@@ -98,26 +97,7 @@ public class PublisherService implements IPublisherService{
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                publishersList.add(new Publishers(id, name));
-            }
-        } catch (SQLException e) {
-            MySQLConnUtils.printSQLException(e);
-        }
-        return publishersList;
-    }
-
-    @Override
-    public List<Publishers> searchAll(String search) {
-        List<Publishers> publisherList = new ArrayList<>();
-        try {
-            Connection connection = MySQLConnUtils.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SEARCH_BY_FIRST_CHARACTER);
-            statement.setString(1, search);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                publisherList.add(new Publishers(id, name));
+                publisherList.add(new Publisher(id, name));
             }
         } catch (SQLException e) {
             MySQLConnUtils.printSQLException(e);
@@ -126,7 +106,26 @@ public class PublisherService implements IPublisherService{
     }
 
     @Override
-    public boolean create(Publishers publisher) {
+    public List<Publisher> searchAll(String search) {
+        List<Publisher> publisherList = new ArrayList<>();
+        try {
+            Connection connection = MySQLConnUtils.getConnection();
+            PreparedStatement statement = connection.prepareStatement(SEARCH_BY_FIRST_CHARACTER);
+            statement.setString(1, search);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                publisherList.add(new Publisher(id, name));
+            }
+        } catch (SQLException e) {
+            MySQLConnUtils.printSQLException(e);
+        }
+        return publisherList;
+    }
+
+    @Override
+    public boolean create(Publisher publisher) {
         boolean success = false;
         try {
             Connection connection = MySQLConnUtils.getConnection();
@@ -141,7 +140,7 @@ public class PublisherService implements IPublisherService{
     }
 
     @Override
-    public boolean update(Publishers publisher) {
+    public boolean update(Publisher publisher) {
         boolean success = false;
         try {
             Connection connection = MySQLConnUtils.getConnection();

@@ -48,15 +48,19 @@
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <select class="form-control" name="field_name" id="field_name" onchange="blockInputSearch()">
-                                            <option value="name">Name</option>
-                                            <option value="author">Author</option>
-                                            <option value="genre">Genre</option>
-                                            <option value="publisher">Publisher</option>
+                                            <option value="b.name">Name</option>
+                                            <option value="a.name">Author</option>
+                                            <option value="g.name">Genre</option>
+                                            <option value="p.name">Publisher</option>
                                             <option value="disable">Disable</option>
                                         </select>
                                     </div>
-                                    <input type="search" class="form-control" name="search" id="search" placeholder="use ' ' to search exactly element. Ex: 'a'">
+                                    <input type="search" class="form-control" name="search" id="search" placeholder="search">
                                     <button type="submit" class="btn btn-primary">Search</button>
+                                </div>
+                                <div>
+                                    <p>use ' ' to search exactly element (Ex: 'a')</p>
+                                    <p>or All caps (no spaces inside) to search by first characters (Ex: AB, 'AB',...)</p>
                                 </div>
                             </form>
                         </div>

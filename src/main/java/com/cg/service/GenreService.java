@@ -1,7 +1,6 @@
 package com.cg.service;
 
-import com.cg.model.Authors;
-import com.cg.model.Genres;
+import com.cg.model.Genre;
 import com.cg.utils.MySQLConnUtils;
 
 import java.sql.Connection;
@@ -88,8 +87,8 @@ public class GenreService implements IGenreService{
     }
 
     @Override
-    public List<Genres> findAll() {
-        List<Genres> genreList = new ArrayList<>();
+    public List<Genre> findAll() {
+        List<Genre> genreList = new ArrayList<>();
         try {
             Connection connection = MySQLConnUtils.getConnection();
             PreparedStatement statement = connection.prepareStatement(SELECT_ALL_GENRES);
@@ -98,7 +97,7 @@ public class GenreService implements IGenreService{
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                genreList.add(new Genres(id, name));
+                genreList.add(new Genre(id, name));
             }
         } catch (SQLException e) {
             MySQLConnUtils.printSQLException(e);
@@ -107,8 +106,8 @@ public class GenreService implements IGenreService{
     }
 
     @Override
-    public List<Genres> searchAll(String search) {
-        List<Genres> genreList = new ArrayList<>();
+    public List<Genre> searchAll(String search) {
+        List<Genre> genreList = new ArrayList<>();
         try {
             Connection connection = MySQLConnUtils.getConnection();
             PreparedStatement statement = connection.prepareStatement(SEARCH_BY_FIRST_CHARACTER);
@@ -117,7 +116,7 @@ public class GenreService implements IGenreService{
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                genreList.add(new Genres(id, name));
+                genreList.add(new Genre(id, name));
             }
         } catch (SQLException e) {
             MySQLConnUtils.printSQLException(e);
@@ -126,7 +125,7 @@ public class GenreService implements IGenreService{
     }
 
     @Override
-    public boolean create(Genres genre) {
+    public boolean create(Genre genre) {
         boolean success = false;
         try {
             Connection connection = MySQLConnUtils.getConnection();
@@ -141,7 +140,7 @@ public class GenreService implements IGenreService{
     }
 
     @Override
-    public boolean update(Genres genre) {
+    public boolean update(Genre genre) {
         boolean success = false;
         try {
             Connection connection = MySQLConnUtils.getConnection();

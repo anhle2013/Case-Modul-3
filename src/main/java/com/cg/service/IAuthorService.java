@@ -1,7 +1,7 @@
 package com.cg.service;
 
-import com.cg.model.Authors;
+import com.cg.model.Author;
 
-public interface IAuthorService extends IGeneralService<Authors>{
+public interface IAuthorService extends IGeneralService<Author>{
     boolean existsByName(String name);
 }
