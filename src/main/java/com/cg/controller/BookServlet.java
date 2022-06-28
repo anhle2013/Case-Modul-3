@@ -135,7 +135,7 @@ public class BookServlet extends HttpServlet {
                 if (firstIndex == 0 && lastIndex == search.length() - 1)
                     query = "WHERE GetFirstCharacters(" + field_name + ") = '" + search + "';";
                 else
-                    query = "WHERE LOWER(" + field_name + ") LIKE '" + search + "%';";
+                    query =  "WHERE GetFirstCharacters(" + field_name + ") LIKE '" + search + "%';";
             }
             else {
                 search = search.toLowerCase();
